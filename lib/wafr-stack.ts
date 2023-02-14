@@ -74,11 +74,11 @@ export class WafrStack extends cdk.Stack {
     }
 
     let ruleGroups: RuleGroup[] = [
-      new RuleGroup("DirectoryTraversal", 35, {
+      new RuleGroup("DirectoryTraversal", 25, {
         regexPatternSetReferenceStatement: {
           arn: regexMap["DirectoryTraversal"],
           fieldToMatch: RuleGroup.MatchQueryString,
-          textTransformations: [RuleGroup.TransformUrlDecode]
+          textTransformations: [RuleGroup.TransformNone]
         }
       }),
       new RuleGroup("DisallowHtmlInForms", 25, {
