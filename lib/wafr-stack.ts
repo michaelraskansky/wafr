@@ -14,7 +14,7 @@ class RegexPatter {
   // Regex
   public static allHtmlTags = ["(%3C)(.*)(%3C)(.*)(%2F%3E)", "(%3C)(.*)(%3C%2F)(.*)(%3E)", "(%3C)(.*)(%2F%3E)", "(.?)%3A%3A(.?)"]
   public static phpSystem = ["(print|system)(.*)"]
-  public static directoryTraversal = ["(page|directory)%3D(..|%2F)(.*)"]
+  public static directoryTraversal = ["(page|directory)%3D(..|%2F)(.*)", "(page|directory)=(..|\/)(.*)"]
   public static commandAppender = ["(%3B|%7C|%26)"]
   public static commands = ["(ls|cat|nc|echo|cat|rm|nmap|route|netstat|open|ypdomainname|nisdomainname|domainname|dnsdomainname|hostname|grep|find|mv|pwd|sleep|kill|ps|bash|ping|sh|expr)"]
 
@@ -74,11 +74,11 @@ export class WafrStack extends cdk.Stack {
     }
 
     let ruleGroups: RuleGroup[] = [
-      new RuleGroup("DirectoryTraversal", 25, {
+      new RuleGroup("DirectoryTraversal", 35, {
         regexPatternSetReferenceStatement: {
           arn: regexMap["DirectoryTraversal"],
           fieldToMatch: RuleGroup.MatchQueryString,
-          textTransformations: [RuleGroup.TransformNone]
+          textTransformations: [RuleGroup.TransformUrlDecode]
         }
       }),
       new RuleGroup("DisallowHtmlInForms", 25, {
