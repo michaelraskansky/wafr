@@ -4,8 +4,6 @@ import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 
 /**
  * TODO:
- * - need to double check that the rules match correctly (body, query) looks like some to not fit the reference
- * - directory traversal
  */
 class RegexPatter {
   public name: string;
