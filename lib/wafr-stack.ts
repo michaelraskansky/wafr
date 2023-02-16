@@ -4,6 +4,7 @@ import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 
 /**
  * TODO:
+ * make prettier
  */
 class RegexPatter {
   public name: string;
