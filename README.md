@@ -1,14 +1,11 @@
-# Welcome to your CDK TypeScript project
+# Description
+Demo project to show the use of cdk to deploy waf configurations.
 
-This is a blank project for CDK development with TypeScript.
+# Deploy
+this can easily be deployed via cloudshell
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-## Useful commands
-
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+1. `git clone https://github.com/michaelraskansky/wafr`
+2. `cd wafr`
+3. `npm install`
+4. `cdk bootstrap`
+5. `cdk deploy` 
