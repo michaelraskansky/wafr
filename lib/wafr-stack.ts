@@ -14,51 +14,12 @@ class RegexPatter {
     "(%3C)(.*)(%3C)(.*)(%2F%3E)",
     "(%3C)(.*)(%3C%2F)(.*)(%3E)",
     "(%3C)(.*)(%2F%3E)",
-    "%5BinnerHTML%5D",
-    "javascript%3A",
-    "%26lt%3Bscript%26gt%3B",
+    "(%5BinnerHTML%5D|javascript%3A|%26lt%3Bscript%26gt%3B)",
     "&lt;/script&gt;",
     "alert()",
-    "(alert)()",
     "%26lt%3B%2Fscript%26gt%3B",
     "__proto__",
     "<(?:\\w+)\\W+?[\\w]",
-    // https://github.com/s0md3v/AwesomeXSS
-    encodeURI("<A/hREf=\"j%0aavas%09cript%0a:%09con%0afirm%0d``\">z"),
-    encodeURI("<d3\"<\"/onclick=\"1>[confirm``]\"<\">z"),
-    encodeURI("<d3/onmouseenter=[2].find(confirm)>z"),
-    encodeURI("<details open ontoggle=confirm()>"),
-    encodeURI("<script y=\"><\">/*<script* */prompt()</script"),
-    encodeURI("<w=\"/x=\"y>\"/ondblclick=`<`[confir\u006d``]>z"),
-    encodeURI("<a href=\"javascript%26colon;alert(1)\">click"),
-    encodeURI("<a href=javas&#99;ript:alert(1)>click"),
-    encodeURI("<script/\"<a\"/src=data:=\".<a,[8].some(confirm)>"),
-    encodeURI("<svg/x=\">\"/onload=confirm()//"),
-    encodeURI("<--`<img/src=` onerror=confirm``> --!>"),
-    encodeURI("<svg%0Aonload=%09((pro\u006dpt))()//"),
-    encodeURI("<sCript x>(((confirm)))``</scRipt x>"),
-    encodeURI("<svg </onload =\"1> (_=prompt,_(1)) \"\">"),
-    encodeURI("<!--><script src=//14.rs>"),
-    encodeURI("<embed src=//14.rs>"),
-    encodeURI("<script x=\">\" src=//15.rs></script>"),
-    encodeURI("<!'/*\"/*/'/*/\"/*--></Script><Image SrcSet=K */; OnError=confirm`1` //>"),
-    encodeURI("<iframe/src \/\/onload = prompt(1)"),
-    encodeURI("<x oncut=alert()>x"),
-    encodeURI("<svg onload=write()>"),
-    encodeURI("<svg onload=alert()>"),
-    encodeURI("</tag><svg onload=alert()>"),
-    encodeURI("><svg onload=alert()>"),
-    encodeURI("><svg onload=alert()><b attr="),
-    encodeURI(" onmouseover=alert() "),
-    encodeURI("onmouseover=alert()//"),
-    encodeURI("autofocus/onfocus=\"alert()"),
-    "ontoggle",
-    "onauxclick",
-    "ondblclick",
-    "oncontextmenu",
-    "onmouseleave",
-    "ontouchcancel",
-    "(.?)%3A%3A(.?)"
   ]
   public static phpSystem = ["(print|system)(.*)"]
   public static directoryTraversal = [
@@ -213,11 +174,26 @@ export class WafrStack extends cdk.Stack {
         }
       }),
 
+      new RuleGroup("XssHandlingNativeBody", 110, {
+        xssMatchStatement: {
+          fieldToMatch: {
+            body: {
+              oversizeHandling: "MATCH"
+            }
+          },
+          textTransformations: [
+            { priority: 0, type: "URL_DECODE" },
+            { priority: 1, type: "HTML_ENTITY_DECODE" }
+          ]
+        }
+      }),
+
       new RuleGroup("XssHandlingNative", 110, {
         xssMatchStatement: {
-          fieldToMatch: RuleGroup.MatchAllQueryArguments,
+          fieldToMatch: { queryString: {} },
           textTransformations: [
-            { priority: 0, type: "COMPRESS_WHITE_SPACE" }
+            { priority: 0, type: "URL_DECODE" },
+            { priority: 1, type: "HTML_ENTITY_DECODE" }
           ]
         }
       }),
