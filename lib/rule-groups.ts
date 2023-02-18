@@ -7,12 +7,6 @@ export class RuleGroup {
     public fieldToMatch: wafv2.CfnRuleGroup.FieldToMatchProperty;
     public textTransformations: wafv2.CfnRuleGroup.TextTransformationProperty[];
 
-    // Matchers
-    public static MatchAllQueryArguments = { allQueryArguments: {} }
-    public static MatchQueryString = { queryString: {} }
-    public static MatchBodyNoMatchOversize = { body: { oversizeHandling: "NO_MATCH" } }
-
-
     // Transformations
     constructor(name: string, capacity: number, statment: wafv2.CfnRuleGroup.StatementProperty) {
         this.name = name;
@@ -23,16 +17,41 @@ export class RuleGroup {
 export class RuleGroups {
     public static ruleGroups(regexMap: { [key: string]: string; }) {
         return [
+
+            // Block html tags 
+            new RuleGroup("BlockHtmlTags", 55, {
+                regexPatternSetReferenceStatement: {
+                    arn: regexMap["HtmlTags"],
+                    fieldToMatch: {
+                        body: {
+                            oversizeHandling: "NO_MATCH"
+                        }
+                    },
+                    textTransformations: [
+                        { priority: 0, type: "URL_DECODE_UNI" },
+                        { priority: 1, type: "HTML_ENTITY_DECODE" },
+                        { priority: 2, type: "LOWERCASE" },
+                    ]
+                }
+            }),
+
+            // Block directory traversal
             new RuleGroup("DirectoryTraversal", 25, {
                 regexPatternSetReferenceStatement: {
                     arn: regexMap["DirectoryTraversal"],
-                    fieldToMatch: RuleGroup.MatchQueryString,
+                    fieldToMatch: {
+                        queryString: {
+
+                        }
+                    },
                     textTransformations: [
                         { priority: 0, type: "NONE" }
                     ]
                 }
             }),
-            new RuleGroup("ForbiddenCommandsBody", 100, {
+
+            // Block commands
+            new RuleGroup("PostEscapeCommand", 70, {
                 regexPatternSetReferenceStatement: {
                     arn: regexMap["Commands"],
                     fieldToMatch: {
@@ -41,62 +60,30 @@ export class RuleGroups {
                         }
                     },
                     textTransformations: [
-                        { priority: 0, type: "URL_DECODE" },
+                        { priority: 0, type: "URL_DECODE_UNI" },
                         { priority: 1, type: "CMD_LINE" }
                     ]
                 }
             }),
 
-            new RuleGroup("PostEscapeCommand", 60, {
-                andStatement: {
-                    statements: [
-                        {
-                            regexPatternSetReferenceStatement: {
-                                arn: regexMap["CommandAppender"],
-                                fieldToMatch: {
-                                    body: {
-                                        oversizeHandling: "MATCH"
-                                    }
-                                },
-                                textTransformations: [
-                                    { priority: 0, type: "NONE" }
-
-                                ]
-                            }
-                        },
-                        {
-                            regexPatternSetReferenceStatement: {
-                                arn: regexMap["Commands"],
-                                fieldToMatch: {
-                                    body: {
-                                        oversizeHandling: "MATCH"
-                                    }
-                                },
-                                textTransformations: [
-                                    { priority: 0, type: "CMD_LINE" }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }),
-
+            // Block PHP  system commans
             new RuleGroup("PhpSystem", 35, {
                 regexPatternSetReferenceStatement: {
                     arn: regexMap["PhpSystem"],
-                    fieldToMatch: RuleGroup.MatchAllQueryArguments,
+                    fieldToMatch: { allQueryArguments: {} },
                     textTransformations: [
                         { priority: 0, type: "NONE" }
                     ]
                 }
             }),
 
+            // Block SQL injection attacks high sensetivity
             new RuleGroup("SqliHighSensetivity", 110, {
                 andStatement: {
                     statements: [
                         {
                             sqliMatchStatement: {
-                                fieldToMatch: RuleGroup.MatchAllQueryArguments,
+                                fieldToMatch: { allQueryArguments: {} },
                                 sensitivityLevel: "HIGH",
                                 textTransformations: [
                                     { priority: 0, type: "URL_DECODE_UNI" },

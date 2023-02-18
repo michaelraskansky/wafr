@@ -2,18 +2,6 @@ export class RegularExpressions {
     public name: string;
     public patterns: string[];
 
-    // Regex   public static commands = ["(%2Fusr|%2Fsbin|%2Fbin|wget|ls|cat|nc|echo|cat|rm|nmap|route|netstat|open|ypdomainname|nisdomainname|domainname|dnsdomainname|hostname|grep|find|mv|pwd|sleep|kill|ps|bash|ping|sh|expr)"]
-
-    public static allHtmlTags = [
-        "(<)(.*)(<)(.*)(/>)",
-        "(<)(.*)(</)(.*)(>)",
-        "(<)(.*)(/>)",
-        "([innerHTML]|javascript:|&lt;script&gt;)",
-        "&lt;/script&gt;",
-        "alert()",
-        "__proto__",
-        "<(?:\\w+)\\W+?[\\w]",
-    ]
     public static phpSystem = [
         "(print|system)(.*)"
     ]
@@ -28,6 +16,15 @@ export class RegularExpressions {
         ".%2F",
         "%2F%2F"
     ]
+    public static mlTagsToBlock = [
+        "href",
+        "form",
+        "script",
+        "svg",
+        "javascript",
+        "img"
+    ]
+
     public static commandsToBlock = [
         "wget",
         "ls",
@@ -58,8 +55,12 @@ export class RegularExpressions {
         "expr",
     ]
 
+    public static htmlTagsRegex = [
+        `(?:<)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\W)`
+    ]
+
     public static commandsRegex = [
-        `(?:^|\\W)(${RegularExpressions.commandsToBlock.join("|")})(?:$|\\W)`
+        `(?:^|\\W*|;|'|&|\\|)(${RegularExpressions.commandsToBlock.join("|")})(?:$|\\W)`,
     ]
 
     public static commandAppender = [
@@ -74,7 +75,7 @@ export class RegularExpressions {
     public static regex(): RegularExpressions[] {
         return [
             new RegularExpressions("DirectoryTraversal", RegularExpressions.directoryTraversal),
-            new RegularExpressions("AllHtmlTags", RegularExpressions.allHtmlTags),
+            new RegularExpressions("HtmlTags", RegularExpressions.htmlTagsRegex),
             new RegularExpressions("CommandAppender", RegularExpressions.commandAppender),
             new RegularExpressions("Commands", RegularExpressions.commandsRegex),
             new RegularExpressions("PhpSystem", RegularExpressions.phpSystem),
