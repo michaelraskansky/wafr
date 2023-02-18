@@ -74,7 +74,7 @@ export class RegularExpressions {
 
     public static htmlTagsRegex = [
         `(?:<)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\\W)`,
-        //`(?:^|\\W*|;|'|&|\\|)(${RegularExpressions.eventHandlers.join("|")})(?:$|\\W)`,
+        `(?:^|\\W*|;|'|&|\\|)(${RegularExpressions.eventHandlers.join("|")})(?:$|\\W)`,
     ]
 
     public static commandsRegex = [
