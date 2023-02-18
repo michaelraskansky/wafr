@@ -14,6 +14,17 @@ export class RuleGroup {
         this.capacity = capacity
     }
 }
+
+/**
+ 
+    <label for="fname">First name:</label>
+    <input type="text" id="fname" name="fname"><br><br>
+    <label for="lname">Last name:</label>
+    <input type="text" id="lname" name="lname"><br><br>
+    <button type="submit">Submit</button>
+    <button type="submit" formmethod="post">Submit using POST</button>
+
+*/
 export class RuleGroups {
     public static ruleGroups(regexMap: { [key: string]: string; }) {
         return [
@@ -51,20 +62,20 @@ export class RuleGroups {
             }),
 
             // Block commands
-            new RuleGroup("PostEscapeCommand", 70, {
-                regexPatternSetReferenceStatement: {
-                    arn: regexMap["Commands"],
-                    fieldToMatch: {
-                        body: {
-                            oversizeHandling: "MATCH"
-                        }
-                    },
-                    textTransformations: [
-                        { priority: 0, type: "URL_DECODE_UNI" },
-                        { priority: 1, type: "CMD_LINE" }
-                    ]
-                }
-            }),
+            //new RuleGroup("PostEscapeCommand", 70, {
+            //    regexPatternSetReferenceStatement: {
+            //        arn: regexMap["Commands"],
+            //        fieldToMatch: {
+            //            body: {
+            //                oversizeHandling: "MATCH"
+            //            }
+            //        },
+            //        textTransformations: [
+            //            { priority: 0, type: "URL_DECODE_UNI" },
+            //            { priority: 1, type: "CMD_LINE" }
+            //        ]
+            //    }
+            //}),
 
             // Block PHP  system commans
             new RuleGroup("PhpSystem", 35, {

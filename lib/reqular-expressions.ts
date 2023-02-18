@@ -14,7 +14,7 @@ export class RegularExpressions {
         "%5C(.*)",
         "%2F..%2F",
         ".%2F",
-        "%2F%2F"
+        "%2F%2F",
     ]
     public static mlTagsToBlock = [
         "href",
@@ -22,9 +22,26 @@ export class RegularExpressions {
         "script",
         "svg",
         "javascript",
-        "img"
+        "embed",
+        "iframe",
+        "details",
+        "img",
+        "body",
+        "html",
+        "object",
+        "isindex",
+        "audio",
+        "video",
     ]
 
+    public static eventHandlers = [
+        "ontoggle",
+        "onauxclick",
+        "ondblclick",
+        "oncontextmenu",
+        "onmouseleave",
+        "ontouchcancel",
+    ]
     public static commandsToBlock = [
         "wget",
         "ls",
@@ -56,7 +73,8 @@ export class RegularExpressions {
     ]
 
     public static htmlTagsRegex = [
-        `(?:<)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\W)`
+        `(?:<)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\\W)`,
+        //`(?:^|\\W*|;|'|&|\\|)(${RegularExpressions.eventHandlers.join("|")})(?:$|\\W)`,
     ]
 
     public static commandsRegex = [
