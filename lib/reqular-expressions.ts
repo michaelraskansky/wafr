@@ -1,9 +1,9 @@
 export class RegularExpressions {
     public name: string;
     public patterns: string[];
-
+    //https://hacken.io/discover/how-to-bypass-waf-hackenproof-cheat-sheet/
     public static phpSystem = [
-        "(print|system)(.*)"
+        "(print|syste|confirm|alert)(.*)"
     ]
     public static directoryTraversal = [
         "(page|directory)%3D(..|%2F)(.*)",
@@ -21,6 +21,8 @@ export class RegularExpressions {
         "form",
         "script",
         "svg",
+        "label",
+        "input",
         "javascript",
         "embed",
         "iframe",
@@ -43,6 +45,7 @@ export class RegularExpressions {
         "ontouchcancel",
     ]
     public static commandsToBlock = [
+        "sbin",
         "wget",
         "ls",
         "cat",
@@ -63,22 +66,25 @@ export class RegularExpressions {
         "find",
         "mv",
         "pwd",
-        "sleep",
         "kill",
         "ps",
         "bash",
         "ping",
         "sh",
-        "expr",
+        "expr"
     ]
 
+
     public static htmlTagsRegex = [
-        `(?:<)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\\W)`,
+        `(?:<|&lt;)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\\W)`,
         `(?:^|\\W*|;|'|&|\\|)(${RegularExpressions.eventHandlers.join("|")})(?:$|\\W)`,
+        "(\\/\\*|\/\/)",
+        "(\\/bin|\\/passwd)",
     ]
 
     public static commandsRegex = [
-        `(?:^|\\W*|;|'|&|\\|)(?:\\b)(${RegularExpressions.commandsToBlock.join("|")})(?:$|\\s|&|\\+)`
+        `(?:^|\\W*|;|'|&|\\|)(?:\\b)(${RegularExpressions.commandsToBlock.join("|")})(?:$|\\s|&|\\+)`,
+        `(\\/\\?\\?\\?\\/)`
     ]
 
     public static commandAppender = [
