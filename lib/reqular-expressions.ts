@@ -87,10 +87,6 @@ export class RegularExpressions {
         `(\\/\\?\\?\\?\\/)`
     ]
 
-    public static commandAppender = [
-        "(%3B|%7C|%26|%60)"
-    ]
-
     constructor(name: string, patterns: string[]) {
         this.name = name;
         this.patterns = patterns
@@ -100,7 +96,6 @@ export class RegularExpressions {
         return [
             new RegularExpressions("DirectoryTraversal", RegularExpressions.directoryTraversal),
             new RegularExpressions("HtmlTags", RegularExpressions.htmlTagsRegex),
-            new RegularExpressions("CommandAppender", RegularExpressions.commandAppender),
             new RegularExpressions("Commands", RegularExpressions.commandsRegex),
             new RegularExpressions("PhpSystem", RegularExpressions.phpSystem),
         ]
