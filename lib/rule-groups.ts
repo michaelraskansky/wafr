@@ -62,20 +62,20 @@ export class RuleGroups {
             }),
 
             // Block commands
-            //new RuleGroup("PostEscapeCommand", 70, {
-            //    regexPatternSetReferenceStatement: {
-            //        arn: regexMap["Commands"],
-            //        fieldToMatch: {
-            //            body: {
-            //                oversizeHandling: "MATCH"
-            //            }
-            //        },
-            //        textTransformations: [
-            //            { priority: 0, type: "URL_DECODE_UNI" },
-            //            { priority: 1, type: "CMD_LINE" }
-            //        ]
-            //    }
-            //}),
+            new RuleGroup("PostEscapeCommand", 70, {
+                regexPatternSetReferenceStatement: {
+                    arn: regexMap["Commands"],
+                    fieldToMatch: {
+                        body: {
+                            oversizeHandling: "MATCH"
+                        }
+                    },
+                    textTransformations: [
+                        { priority: 0, type: "URL_DECODE_UNI" },
+                        { priority: 1, type: "CMD_LINE" }
+                    ]
+                }
+            }),
 
             // Block PHP  system commans
             new RuleGroup("PhpSystem", 35, {

@@ -78,7 +78,7 @@ export class RegularExpressions {
     ]
 
     public static commandsRegex = [
-        `(?:^|\\W*|;|'|&|\\|)(${RegularExpressions.commandsToBlock.join("|")})(?:$|\\W)`,
+        `(?:^|\\W*|;|'|&|\\|)(?:\\b)(${RegularExpressions.commandsToBlock.join("|")})(?:$|\\s|&|\\+)`
     ]
 
     public static commandAppender = [
