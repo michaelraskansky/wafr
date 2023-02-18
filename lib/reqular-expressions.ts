@@ -3,7 +3,7 @@ export class RegularExpressions {
     public patterns: string[];
     //https://hacken.io/discover/how-to-bypass-waf-hackenproof-cheat-sheet/
     public static phpSystem = [
-        "(print|syste|confirm|alert)(.*)"
+        "(print|system|confirm|alert)(.*)"
     ]
     public static directoryTraversal = [
         "(page|directory)%3D(..|%2F)(.*)",
