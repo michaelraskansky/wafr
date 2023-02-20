@@ -41,9 +41,7 @@ export class WafrStack extends cdk.Stack {
               cloudWatchMetricsEnabled: true,
             },
             priority: 0,
-            action: {
-              block: {}
-            },
+            action: x.action,
             statement: x.statment
           }
         ],
