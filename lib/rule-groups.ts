@@ -1,4 +1,5 @@
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
+
 export class RuleGroup {
     public name: string;
     public patterns: string[];
@@ -6,18 +7,43 @@ export class RuleGroup {
     public statment: wafv2.CfnRuleGroup.StatementProperty
     public fieldToMatch: wafv2.CfnRuleGroup.FieldToMatchProperty;
     public textTransformations: wafv2.CfnRuleGroup.TextTransformationProperty[];
+    public action: wafv2.CfnRuleGroup.RuleActionProperty;
 
     // Transformations
-    constructor(name: string, capacity: number, statment: wafv2.CfnRuleGroup.StatementProperty) {
+    constructor(
+        name: string,
+        capacity: number,
+        statment: wafv2.CfnRuleGroup.StatementProperty,
+        action: wafv2.CfnRuleGroup.RuleActionProperty = { block: {} }) {
         this.name = name;
-        this.statment = statment
-        this.capacity = capacity
+        this.statment = statment;
+        this.capacity = capacity;
+        this.action = action;
     }
 }
 
 export class RuleGroups {
+
+
     public static ruleGroups(regexMap: { [key: string]: string; }) {
         return [
+            // Challange out of country
+            new RuleGroup("ChallangeOutOfIsrael", 55, {
+                notStatement: {
+                    statement: {
+                        geoMatchStatement: {
+                            countryCodes: ["IL"],
+                            forwardedIpConfig: {
+                                headerName: "X-Forwarded-For",
+                                fallbackBehavior: "MATCH",
+                            },
+                        }
+                    }
+                }
+            }, {
+                challenge: {
+                }
+            }),
 
             // Block html tags 
             new RuleGroup("BlockHtmlTags", 55, {
