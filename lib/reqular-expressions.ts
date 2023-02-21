@@ -5,9 +5,14 @@ export class RegularExpressions {
     public name: string;
     public patterns: string[];
     //https://hacken.io/discover/how-to-bypass-waf-hackenproof-cheat-sheet/
-    public static phpSystem = [
-        "(print|system|confirm|alert)(.*)"
-    ]
+
+    public static phpSystem = _
+        .chain(fs.readFileSync('patterns/php_commands.txt', 'utf8').split("\n"))
+        .chunk(10)
+        .map((commands) => commands.join("|"))
+        .map((commandsOr) => `(${commandsOr})(.*)`)
+        .value()
+
     public static mlTagsToBlock = fs.readFileSync('patterns/ml_tags.txt', 'utf8').split("\n")
     public static eventHandlers = fs.readFileSync('patterns/event_handlers.txt', 'utf8').split("\n")
     public static commandsToBlock = fs.readFileSync('patterns/commands.txt', 'utf8').split("\n")
@@ -27,12 +32,18 @@ export class RegularExpressions {
         `(?:<|&lt;)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\\W)`,
         `(?:^|\\W*|;|'|&|\\|)(${RegularExpressions.eventHandlers.join("|")})(?:$|\\W)`,
         "(\\/\\*|\/\/)",
-        "(\\/bin|\\/passwd)",
     ]
 
     public static commandsRegex = [
         `(?:^|\\W*|;|'|&|\\|)(?:\\b)(${RegularExpressions.commandsToBlock.join("|")})(?:$|\\s|&|\\+)`,
         `(\\/\\?\\?\\?\\/)`
+    ]
+
+    // Unix shell expressions
+    public static unixShell = [
+        /\$(?:\((?:.*|\(.*\))\)|\{.*\})|[<>]\(.*\)|\/[0-9A-Z_a-z]*\[!?.+\]/gm,
+        //https://regex101.com/r/V6wrCO/1
+        /(?:[*?`\\'][^\/\n]+\/|\$[({\[#@!?*\-_$a-zA-Z0-9]|\/[^\/]+?[*?`\\'])/gm
     ]
 
     constructor(name: string, patterns: string[]) {
@@ -41,8 +52,14 @@ export class RegularExpressions {
     }
 
     public static regex(): RegularExpressions[] {
+        _.map(RegularExpressions.unixShell, (regexp) => {
+
+        })
 
         return [
+            new RegularExpressions("UnixShellFromCrs", _.map(RegularExpressions.unixShell, (x) => {
+                return x.source
+            })),
             new RegularExpressions("DirectoryTraversal", RegularExpressions.directoryTraversal),
             new RegularExpressions("HtmlTags", RegularExpressions.htmlTagsRegex),
             new RegularExpressions("Commands", RegularExpressions.commandsRegex),
