@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import _ = require('lodash');
+
 export class RegularExpressions {
     public name: string;
     public patterns: string[];
@@ -5,6 +8,9 @@ export class RegularExpressions {
     public static phpSystem = [
         "(print|system|confirm|alert)(.*)"
     ]
+    public static mlTagsToBlock = fs.readFileSync('patterns/ml_tags.txt', 'utf8').split("\n")
+    public static eventHandlers = fs.readFileSync('patterns/event_handlers.txt', 'utf8').split("\n")
+    public static commandsToBlock = fs.readFileSync('patterns/commands.txt', 'utf8').split("\n")
     public static directoryTraversal = [
         "(page|directory)%3D(..|%2F)(.*)",
         "(page|directory)=(..|\/)(.*)",
@@ -16,64 +22,6 @@ export class RegularExpressions {
         ".%2F",
         "%2F%2F",
     ]
-    public static mlTagsToBlock = [
-        "href",
-        "form",
-        "script",
-        "svg",
-        "label",
-        "input",
-        "javascript",
-        "embed",
-        "iframe",
-        "details",
-        "img",
-        "body",
-        "html",
-        "object",
-        "isindex",
-        "audio",
-        "video",
-    ]
-
-    public static eventHandlers = [
-        "ontoggle",
-        "onauxclick",
-        "ondblclick",
-        "oncontextmenu",
-        "onmouseleave",
-        "ontouchcancel",
-    ]
-    public static commandsToBlock = [
-        "sbin",
-        "wget",
-        "ls",
-        "cat",
-        "nc",
-        "echo",
-        "cat",
-        "rm",
-        "nmap",
-        "route",
-        "netstat",
-        "open",
-        "ypdomainname",
-        "nisdomainname",
-        "domainname",
-        "dnsdomainname",
-        "hostname",
-        "grep",
-        "find",
-        "mv",
-        "pwd",
-        "kill",
-        "ps",
-        "bash",
-        "ping",
-        "sh",
-        "expr"
-    ]
-
 
     public static htmlTagsRegex = [
         `(?:<|&lt;)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\\W)`,
@@ -93,6 +41,7 @@ export class RegularExpressions {
     }
 
     public static regex(): RegularExpressions[] {
+
         return [
             new RegularExpressions("DirectoryTraversal", RegularExpressions.directoryTraversal),
             new RegularExpressions("HtmlTags", RegularExpressions.htmlTagsRegex),
