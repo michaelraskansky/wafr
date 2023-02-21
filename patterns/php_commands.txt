@@ -29,7 +29,6 @@ posix_getuid
 posix_uname
 ReflectionFunction
 require_once
-shell_exec
 str_rot13
 sys_get_temp_dir
 wp_remote_fopen
@@ -46,3 +45,4 @@ print
 system
 confirm
 alert
+shell_exec
