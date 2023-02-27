@@ -13,9 +13,14 @@ export class RegularExpressions {
         .map((commandsOr) => `(${commandsOr})(.*)`)
         .value()
 
+    public static commandsToBlock = _
+        .chain(fs.readFileSync('patterns/commands.txt', 'utf8').split("\n"))
+        .chunk(10)
+        .map((commandsOr) => `(?:^|\\W*|;|'|&|\\|)(?:\\b)(${commandsOr.join("|")})(?:$|\\s|&|\\+)`)
+        .value()
+
     public static mlTagsToBlock = fs.readFileSync('patterns/ml_tags.txt', 'utf8').split("\n")
     public static eventHandlers = fs.readFileSync('patterns/event_handlers.txt', 'utf8').split("\n")
-    public static commandsToBlock = fs.readFileSync('patterns/commands.txt', 'utf8').split("\n")
     public static directoryTraversal = [
         "(page|directory)%3D(..|%2F)(.*)",
         "(page|directory)=(..|\/)(.*)",
@@ -26,17 +31,14 @@ export class RegularExpressions {
         "%2F..%2F",
         ".%2F",
         "%2F%2F",
+        "%2F%3F%3F%3F%2F"
     ]
 
     public static htmlTagsRegex = [
         `(?:<|&lt;)(${RegularExpressions.mlTagsToBlock.join("|")})(?:$|\\W)`,
         `(?:^|\\W*|;|'|&|\\|)(${RegularExpressions.eventHandlers.join("|")})(?:$|\\W)`,
         "(\\/\\*|\/\/)",
-    ]
-
-    public static commandsRegex = [
-        `(?:^|\\W*|;|'|&|\\|)(?:\\b)(${RegularExpressions.commandsToBlock.join("|")})(?:$|\\s|&|\\+)`,
-        `(\\/\\?\\?\\?\\/)`
+        "(.*)::(.*)"
     ]
 
     // Unix shell expressions
@@ -62,7 +64,7 @@ export class RegularExpressions {
             })),
             new RegularExpressions("DirectoryTraversal", RegularExpressions.directoryTraversal),
             new RegularExpressions("HtmlTags", RegularExpressions.htmlTagsRegex),
-            new RegularExpressions("Commands", RegularExpressions.commandsRegex),
+            new RegularExpressions("Commands", RegularExpressions.commandsToBlock),
             new RegularExpressions("PhpSystem", RegularExpressions.phpSystem),
         ]
 
