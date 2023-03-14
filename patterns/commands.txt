@@ -25,4 +25,4 @@ bash
 ping
 sh
 expr
-ifconfig
+ncat
